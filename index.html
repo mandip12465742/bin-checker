@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIN Checker</title>
+</head>
+<body>
+    <h2>Enter BIN Number</h2>
+    <input type="text" id="binInput" placeholder="Enter first 6 digits">
+    <button onclick="checkBIN()">Check</button>
+    <div id="result"></div>
+
+    <script>
+        async function checkBIN() {
+            let bin = document.getElementById('binInput').value;
+            if (bin.length < 6) {
+                alert("Enter at least 6 digits");
+                return;
+            }
+            let response = await fetch(`https://lookup.binlist.net/${bin}`);
+            if (!response.ok) {
+                document.getElementById('result').innerHTML = "Invalid BIN or API error!";
+                return;
+            }
+            let data = await response.json();
+            document.getElementById('result').innerHTML = `
+                <p><strong>Bank:</strong> ${data.bank?.name || "N/A"}</p>
+                <p><strong>Country:</strong> ${data.country?.name || "N/A"}</p>
+                <p><strong>Scheme:</strong> ${data.scheme || "N/A"}</p>
+                <p><strong>Type:</strong> ${data.type || "N/A"}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
